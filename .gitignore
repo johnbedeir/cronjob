@@ -124,3 +124,14 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+<<<<<<< HEAD
+=======
+
+LICENSE
+main.py
+README.md
+requirements.txt
+run.bat
+script.sh
+.gitattributes
+>>>>>>> bf2f3ce031c7485144d79d823a9438581b75feb7
