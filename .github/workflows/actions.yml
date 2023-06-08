@@ -1,0 +1,26 @@
+name: Update YAML file
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  update_file:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Update YAML file
+      run: |
+        echo "LAST_UPDATE: $(date +"%A %B %d %Y at %r")" > update_me.yaml
+        echo "UPDATE_TIMES: $(( $(grep -oP '(?<=UPDATE_TIMES: )\d+' update_me.yaml) + 1 ))" >> update_me.yaml
+
+    - name: Commit and push if it changed
+      run: |
+        git diff
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -am "Update YAML file" || exit 0
+        git push
