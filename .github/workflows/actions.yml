@@ -3,7 +3,8 @@ name: Update YAML file
 on:
   schedule:
     - cron: '0 * * * *'
-
+  push:
+  
 jobs:
   update_file:
     runs-on: ubuntu-latest
