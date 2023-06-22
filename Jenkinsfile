@@ -17,7 +17,7 @@ pipeline {
                     }
                     sh "git add update_me.yaml"
                     sh 'git commit -m "Updated LAST_UPDATE in update_me.yaml"'
-                    sh "git push origin main"
+                    sh "git push"
                 }
             }
         }
