@@ -17,7 +17,6 @@ pipeline {
                     git add update_me.yaml
                     git commit -m "Updated LAST_UPDATE in update_me.yaml"
                     git push origin main
-                    rm -rf cronjob
                     '''
                 }
             }
