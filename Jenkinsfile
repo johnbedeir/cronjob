@@ -16,7 +16,7 @@ pipeline {
                     }
                     sh "git add update_me.yaml"
                     sh 'git commit -m "Updated LAST_UPDATE in update_me.yaml"'
-                    sh "git push https://github.com/johnbedeir/cronjob.git main"
+                    sh "git push origin HEAD:main"
                 }
             }
         }
