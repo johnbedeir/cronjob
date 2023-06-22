@@ -10,7 +10,6 @@ pipeline {
 
                     // Replace the content of the file with the current date and time
                     sh '''
-                    rm -rf cronjob
                     git clone https://github.com/johnbedeir/cronjob.git
                     cd cronjob
                     echo 'LAST_UPDATE: $(date +"%A %B %d %Y at %I:%M:%S%p")' > update_me.yaml
