@@ -9,7 +9,7 @@ pipeline {
                     checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/johnbedeir/cronjob.git' ]]])
 
                     // Replace the content of the file with the current date and time
-                    sh """
+                    sh '''
                     git clone https://github.com/johnbedeir/cronjob.git
                     cd cronjob
                     echo 'LAST_UPDATE: $(date +"%A %B %d %Y at %I:%M:%S%p")' > update_me.yaml
@@ -17,7 +17,7 @@ pipeline {
                     git commit -m "Updated LAST_UPDATE in update_me.yaml"
                     git push origin main
 
-                    """
+                    '''
                 }
             }
         }
