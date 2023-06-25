@@ -1,6 +1,11 @@
 pipeline {
     agent any
     
+
+    environment {
+        GH_TOKEN = credentials('github-token')
+    }
+
     stages {
         stage('Update File') {
             steps {
@@ -23,12 +28,12 @@ pipeline {
                     script {
                         def prTitle = "Update from dev branch"
                         def prBody = "This pull request contains updates from the dev branch."
-                        sh "gh pr create --title '${prTitle}' --body '${prBody}' --base main --head dev"
+                        sh "GH_TOKEN=${env.GH_TOKEN} gh pr create --title '${prTitle}' --body '${prBody}' --base main --head dev"
                     }
                     
                     // Merge the pull request
                     script {
-                        sh "gh pr merge --auto --merge --delete-branch --head dev --base main"
+                        sh "GH_TOKEN=${env.GH_TOKEN} gh pr merge --auto --merge --delete-branch --head dev --base main"
                     }
                 }
             }
