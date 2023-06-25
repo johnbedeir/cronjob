@@ -17,7 +17,19 @@ pipeline {
                     }
                     sh "git add update_me.yaml"
                     sh 'git commit -m "Updated LAST_UPDATE in update_me.yaml"'
-                    sh "git push origin HEAD:main"
+                    sh "git push origin HEAD:dev"
+
+                    // Create a pull request from dev to main
+                    script {
+                        def prTitle = "Update from dev branch"
+                        def prBody = "This pull request contains updates from the dev branch."
+                        sh "gh pr create --title '${prTitle}' --body '${prBody}' --base main --head dev"
+                    }
+                    
+                    // Merge the pull request
+                    script {
+                        sh "gh pr merge --auto --merge --delete-branch --head dev --base main"
+                    }
                 }
             }
         }
