@@ -25,18 +25,18 @@ pipeline {
                     sh "git push origin HEAD:dev"
 
                     // Create a pull request from dev to main
-                    withCredentials([usernamePassword(credentialsId: 'github-token')]) {
+                    withCredentials([string(credentialsId: 'github-token', variable: 'GH_TOKEN')]) {
                         script {
                             def prTitle = "Update from dev branch"
                             def prBody = "This pull request contains updates from the dev branch."
-                            sh "gh pr create --title '${prTitle}' --body '${prBody}' --base main --head dev -R ${env.GH_TOKEN_USR}:${env.GH_TOKEN_PSW}"
+                            sh "GH_TOKEN=${env.GH_TOKEN} gh pr create --title '${prTitle}' --body '${prBody}' --base main --head dev"
                         }
                     }
                     
                     // Merge the pull request
-                    withCredentials([usernamePassword(credentialsId: 'github-token')]) {
+                    withCredentials([string(credentialsId: 'github-token', variable: 'GH_TOKEN')]) {
                         script {
-                            sh "gh pr merge --auto --merge --delete-branch --head dev --base main -R ${env.GH_TOKEN_USR}:${env.GH_TOKEN_PSW}"
+                            sh "GH_TOKEN=${env.GH_TOKEN} gh pr merge --auto --merge --delete-branch --head dev --base main"
                         }
                     }
                 }
