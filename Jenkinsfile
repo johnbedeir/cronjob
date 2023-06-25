@@ -3,8 +3,8 @@ pipeline {
     
 
     environment {
-        GH_USERNAME = "${credentials('github-token').username}"
-        GH_PASSWORD = "${credentials('github-token').password}"
+        GH_USERNAME = ''
+        GH_PASSWORD = ''
     }
 
     stages {
