@@ -1,11 +1,5 @@
 pipeline {
     agent any
-    
-
-    environment {
-        GH_USERNAME = "${credentials('github-token').username}"
-        GH_PASSWORD = "${credentials('github-token').password}"
-    }
 
     stages {
         stage('Update File') {
@@ -13,7 +7,7 @@ pipeline {
                 script {
                     // Clone the repository
                     checkout([$class: 'GitSCM', branches: [[name: '*/dev']], userRemoteConfigs: [[url: 'https://github.com/johnbedeir/cronjob.git']]])
-                    
+
                     // Replace the content of the file with the current date and time
                     sh "cd cronjob"
                     sh "git pull https://github.com/johnbedeir/cronjob.git dev"
@@ -26,20 +20,10 @@ pipeline {
                     sh "git push origin HEAD:dev"
 
                     // Create a pull request from dev to main
-                    withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_PASSWORD')]) {
-                        script {
-                            def prTitle = "Update from dev branch"
-                            def prBody = "This pull request contains updates from the dev branch."
-                            sh "GH_USERNAME=${env.GH_USERNAME} GH_PASSWORD=${env.GH_PASSWORD} gh pr create --title '${prTitle}' --body '${prBody}' --base main --head dev"
-                        }
-                    }
-                    
+                    sh "gh pr create --title 'Update from dev branch' --body 'This pull request contains updates from the dev branch.' --base main --head dev"
+
                     // Merge the pull request
-                    withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_PASSWORD')]) {
-                        script {
-                            sh "GH_USERNAME=${env.GH_USERNAME} GH_PASSWORD=${env.GH_PASSWORD} gh pr merge --auto --merge --delete-branch --head dev --base main"
-                        }
-                    }
+                    sh "gh pr merge --auto --merge --base=main"
                 }
             }
         }
