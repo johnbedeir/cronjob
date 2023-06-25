@@ -3,8 +3,9 @@ pipeline {
     
 
     environment {
-        GH_USERNAME = ''
-        GH_PASSWORD = ''
+        GH_USERNAME = credentials('github-credentials').username
+        GH_PASSWORD = credentials('github-credentials').password
+        GH_TOKEN = "${GH_USERNAME}:${GH_PASSWORD}"
     }
 
     stages {
@@ -26,18 +27,22 @@ pipeline {
                     sh "git push origin HEAD:dev"
 
                     // Create a pull request from dev to main
-                    withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_PASSWORD')]) {
-                        script {
-                            def prTitle = "Update from dev branch"
-                            def prBody = "This pull request contains updates from the dev branch."
-                            sh "GH_USERNAME=${env.GH_USERNAME} GH_PASSWORD=${env.GH_PASSWORD} gh pr create --title '${prTitle}' --body '${prBody}' --base main --head dev"
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_PASSWORD')]) {
+                        withEnv(['GH_TOKEN=${env.GH_TOKEN}']) {
+                            script {
+                                def prTitle = "Update from dev branch"
+                                def prBody = "This pull request contains updates from the dev branch."
+                                sh "gh pr create --title '${prTitle}' --body '${prBody}' --base main --head dev"
+                            }
                         }
                     }
-                    
+
                     // Merge the pull request
-                    withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_PASSWORD')]) {
-                        script {
-                            sh "GH_USERNAME=${env.GH_USERNAME} GH_PASSWORD=${env.GH_PASSWORD} gh pr merge --auto --merge --delete-branch --head dev --base main"
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_PASSWORD')]) {
+                        withEnv(['GH_TOKEN=${env.GH_TOKEN}']) {
+                            script {
+                                sh "gh pr merge --auto --merge --delete-branch --head dev --base main"
+                            }
                         }
                     }
                 }
