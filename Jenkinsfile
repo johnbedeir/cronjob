@@ -23,7 +23,7 @@ pipeline {
                     sh "gh pr create --title 'Update from dev branch' --body 'This pull request contains updates from the dev branch.' --base main --head dev"
 
                     // Merge the pull request
-                    sh "gh pr merge --auto --merge --delete-branch --head dev --base main"
+                    sh "gh pr merge --auto --merge --head=dev --base=main"
                 }
             }
         }
