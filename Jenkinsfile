@@ -3,8 +3,8 @@ pipeline {
     
 
     environment {
-        GH_USERNAME = credentials('github-credentials').username
-        GH_PASSWORD = credentials('github-credentials').password
+        GH_USERNAME = credentials('github-token').username
+        GH_PASSWORD = credentials('github-token').password
         GH_TOKEN = "${GH_USERNAME}:${GH_PASSWORD}"
     }
 
@@ -27,7 +27,7 @@ pipeline {
                     sh "git push origin HEAD:dev"
 
                     // Create a pull request from dev to main
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_PASSWORD')]) {
                         withEnv(['GH_TOKEN=${env.GH_TOKEN}']) {
                             script {
                                 def prTitle = "Update from dev branch"
@@ -38,7 +38,7 @@ pipeline {
                     }
 
                     // Merge the pull request
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GH_USERNAME', passwordVariable: 'GH_PASSWORD')]) {
                         withEnv(['GH_TOKEN=${env.GH_TOKEN}']) {
                             script {
                                 sh "gh pr merge --auto --merge --delete-branch --head dev --base main"
