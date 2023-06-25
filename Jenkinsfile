@@ -11,7 +11,7 @@ pipeline {
                     // Replace the content of the file with the current date and time
                     sh "git clone https://github.com/johnbedeir/cronjob.git"
                     sh "cd cronjob"
-                    // sh "git pull https://github.com/johnbedeir/cronjob.git main"
+                    sh "git pull https://github.com/johnbedeir/cronjob.git dev"
                     script {
                         def currentDate = sh(script: 'date +"%A %B %d %Y at %I:%M:%S%p"', returnStdout: true).trim()
                         sh "echo 'LAST_UPDATE: ${currentDate}' > update_me.yaml"
