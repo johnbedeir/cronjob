@@ -19,6 +19,8 @@ pipeline {
                     sh 'git commit -m "Updated LAST_UPDATE in update_me.yaml"'
                     sh "git push origin HEAD:dev"
 
+                    sleep(time: 30, unit: 'SECONDS')
+                    
                     // Create a pull request from dev to main
                     sh "gh pr create --title 'Update from dev branch' --body 'This pull request contains updates from the dev branch.' --base main --head dev"
 
