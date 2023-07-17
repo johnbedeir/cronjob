@@ -9,6 +9,8 @@ pipeline {
                     checkout([$class: 'GitSCM', branches: [[name: '*/dev']], userRemoteConfigs: [[url: 'https://github.com/johnbedeir/cronjob.git']]])
 
                     // Replace the content of the file with the current date and time
+                    sh "pwd"
+                    sh "ls -la"
                     sh "cd cronjob"
                     sh "git pull https://github.com/johnbedeir/cronjob.git dev"
                     script {
