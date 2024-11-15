@@ -8,11 +8,8 @@ pipeline {
                     // Clone the repository
                     //checkout([$class: 'GitSCM', branches: [[name: '*/dev']], userRemoteConfigs: [[url: 'https://github.com/johnbedeir/cronjob.git']]])
                     sh '''
-                        git config --global user.name "cipherpath@proton.me"
-                        git config --global user.email "johnbedeir"
+                        cd cronjob && git pull https://github.com/johnbedeir/cronjob.git dev
                     '''
-                    // Replace the content of the file with the current date and time
-                    sh "git pull https://github.com/johnbedeir/cronjob.git dev"
                     script {
                         def currentDate = sh(script: 'date +"%A %B %d %Y at %I:%M:%S%p"', returnStdout: true).trim()
                         sh "echo 'LAST_UPDATE: ${currentDate}' > update_me.yaml"
