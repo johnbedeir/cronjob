@@ -7,11 +7,10 @@ pipeline {
                 script {
                     // Clone the repository
                     //checkout([$class: 'GitSCM', branches: [[name: '*/dev']], userRemoteConfigs: [[url: 'https://github.com/johnbedeir/cronjob.git']]])
-                    // sh '''
-                    //     git config --global user.name "cipherpath@proton.me"
-                    //     git config --global user.email "johnbedeir"
-                    //     git clone https://github.com/johnbedeir/cronjob.git
-                    // '''
+                    sh '''
+                        git config --global user.name "cipherpath@proton.me"
+                        git config --global user.email "johnbedeir"
+                    '''
                     // Replace the content of the file with the current date and time
                     sh "git pull https://github.com/johnbedeir/cronjob.git dev"
                     script {
