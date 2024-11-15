@@ -16,7 +16,7 @@ pipeline {
                     }
                     sh "git add update_me.yaml"
                     sh 'git commit -m "Updated LAST_UPDATE in update_me.yaml"'
-                    sh "git push origin HEAD:dev"
+                    sh "git push"
 
                     sleep(time: 30, unit: 'SECONDS')
                     
