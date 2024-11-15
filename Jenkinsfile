@@ -4,11 +4,12 @@ pipeline {
     stages {
         stage('Update File') {
             steps {
+                withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_TOKEN')]) {
                 script {
                     // Clone the repository
                     //checkout([$class: 'GitSCM', branches: [[name: '*/dev']], userRemoteConfigs: [[url: 'https://github.com/johnbedeir/cronjob.git']]])
                     sh '''
-                        cd cronjob && git pull https://github.com/johnbedeir/cronjob.git main
+                        cd cronjob && git pull git pull https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git main
                     '''
                     script {
                         def currentDate = sh(script: 'date +"%A %B %d %Y at %I:%M:%S%p"', returnStdout: true).trim()
@@ -16,7 +17,8 @@ pipeline {
                     }
                     sh "git add update_me.yaml"
                     sh 'git commit -m "Updated LAST_UPDATE in update_me.yaml"'
-                    sh "git push origin HEAD:main"
+
+                    sh "git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git HEAD:main"
 
                     sleep(time: 30, unit: 'SECONDS')
                     
@@ -25,6 +27,7 @@ pipeline {
 
                     // Merge the pull request
                     //sh "gh pr merge dev --merge"
+                    }
                 }
             }
         }
