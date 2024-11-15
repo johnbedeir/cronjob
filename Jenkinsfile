@@ -7,11 +7,7 @@ pipeline {
                 script {
                     // Clone the repository
                     //checkout([$class: 'GitSCM', branches: [[name: '*/dev']], userRemoteConfigs: [[url: 'https://github.com/johnbedeir/cronjob.git']]])
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
-                        sh """
-                            git clone https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git
-                        """
-                    }
+                    sh "git clone https://github.com/johnbedeir/cronjob.git"
                     // Replace the content of the file with the current date and time
                     sh "git pull https://github.com/johnbedeir/cronjob.git dev"
                     script {
