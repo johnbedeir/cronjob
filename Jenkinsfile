@@ -8,7 +8,7 @@ pipeline {
                     // Clone the repository
                     //checkout([$class: 'GitSCM', branches: [[name: '*/dev']], userRemoteConfigs: [[url: 'https://github.com/johnbedeir/cronjob.git']]])
                     sh '''
-                        cd cronjob && git pull
+                        cd cronjob && git pull https://github.com/johnbedeir/cronjob.git main
                     '''
                     script {
                         def currentDate = sh(script: 'date +"%A %B %d %Y at %I:%M:%S%p"', returnStdout: true).trim()
@@ -16,7 +16,7 @@ pipeline {
                     }
                     sh "git add update_me.yaml"
                     sh 'git commit -m "Updated LAST_UPDATE in update_me.yaml"'
-                    sh "git push"
+                    sh "git push origin HEAD:dev"
 
                     sleep(time: 30, unit: 'SECONDS')
                     
