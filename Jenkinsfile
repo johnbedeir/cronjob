@@ -23,14 +23,10 @@ pipeline {
                     sleep(time: 30, unit: 'SECONDS')
                     
                     // Create a pull request from dev to main
-                    sh '''
-                        cd cronjob && gh pr create --title 'Update from test branch' --body 'This pull request contains updates from the test branch.' --base main --head test
-                    '''
+                    sh "gh pr create --title 'Update from test branch' --body 'This pull request contains updates from the test branch.' --base main --head test"
 
                     // Merge the pull request
-                    sh '''
-                        cd cronjob && gh pr merge test --merge
-                    '''
+                    sh "gh pr merge test --merge"
                     }
                 }
             }
