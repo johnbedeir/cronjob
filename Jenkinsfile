@@ -23,10 +23,10 @@ pipeline {
                     sleep(time: 30, unit: 'SECONDS')
                     
                     // Create a pull request from dev to main
-                    //sh "gh pr create --title 'Update from dev branch' --body 'This pull request contains updates from the dev branch.' --base main --head dev"
+                    sh "gh pr create --title 'Update from test branch' --body 'This pull request contains updates from the test branch.' --base main --head test"
 
                     // Merge the pull request
-                    //sh "gh pr merge dev --merge"
+                    sh "gh pr merge test --merge"
                     }
                 }
             }
