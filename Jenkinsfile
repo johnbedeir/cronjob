@@ -73,7 +73,7 @@ pipeline {
                         '''
 
                         // Generate a custom date for the commit (e.g., 30 days ago)
-                        def customDate = sh(script: 'date -d "30 days ago" +"%Y-%m-%d %H:%M:%S"', returnStdout: true).trim()
+                        def customDate = sh(script: 'date -d "365 days ago" +"%Y-%m-%d %H:%M:%S"', returnStdout: true).trim()
 
                         // Update the file
                         def currentDate = sh(script: 'date +"%A %B %d %Y at %I:%M:%S%p"', returnStdout: true).trim()
