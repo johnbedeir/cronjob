@@ -26,6 +26,7 @@ pipeline {
                     // Create a pull request from dev to main
                     //sh "gh pr create -https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git -title 'Update from test branch' --body 'This pull request contains updates from the test branch.' --base main --head test"
                     sh """
+                        echo "${GIT_TOKEN}" | gh auth login --with-token
                         cd cronjob
                         gh pr create \
                         --title 'Update from test branch' \
