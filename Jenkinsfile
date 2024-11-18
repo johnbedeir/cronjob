@@ -10,7 +10,9 @@ pipeline {
                     checkout([$class: 'GitSCM', branches: [[name: '*/test']], userRemoteConfigs: [[url: 'https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git']]])
 
                     sh '''
-                        cd cronjob && git pull https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git test
+                        cd cronjob
+                        git remote set-url origin https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git
+                        git checkout test
                     '''
                     script {
                         def currentDate = sh(script: 'date +"%A %B %d %Y at %I:%M:%S%p"', returnStdout: true).trim()
@@ -21,12 +23,12 @@ pipeline {
 
                     sh "git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git HEAD:test"
 
-                    sleep(time: 30, unit: 'SECONDS')
+                    sleep(time: 15, unit: 'SECONDS')
                     
                     // Create a pull request from dev to main
                     //sh "gh pr create -https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git -title 'Update from test branch' --body 'This pull request contains updates from the test branch.' --base main --head test"
                     sh """
-                        echo "${GIT_TOKEN}" | gh auth login --with-token
+                        gh auth login --with-token <<< "${GIT_TOKEN}"
                         git remote add origin https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git
                         cd cronjob
                         gh pr create \
