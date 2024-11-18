@@ -27,8 +27,8 @@ pipeline {
                     
                     // Create a pull request from dev to main
                     //sh "gh pr create -https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git -title 'Update from test branch' --body 'This pull request contains updates from the test branch.' --base main --head test"
-                    sh """
-                        gh auth login --with-token <<< "${GIT_TOKEN}"
+                    sh '''
+                        echo ${GIT_TOKEN} | gh auth login --with-token
                         git remote add origin https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git
                         cd cronjob
                         gh pr create \
@@ -36,7 +36,7 @@ pipeline {
                         --body 'This pull request contains updates from the test branch.' \
                         --base main \
                         --head test
-                    """
+                    '''
 
                     // Merge the pull request
                     sh "gh pr merge https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git test --merge"
