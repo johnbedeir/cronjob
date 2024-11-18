@@ -21,7 +21,10 @@ pipeline {
                     sh "git add update_me.yaml"
                     sh 'git commit -m "Updated LAST_UPDATE in update_me.yaml"'
 
-                    sh "git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git HEAD:test"
+                    sh '''
+                        cd cronjob
+                        git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git HEAD:test
+                    '''
 
                     sleep(time: 15, unit: 'SECONDS')
                     
