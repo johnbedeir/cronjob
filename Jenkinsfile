@@ -6,23 +6,22 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_TOKEN')]) {
                     script {
-                        // Clone the repository
+                        // Clone the repository and initialize submodules
                         checkout([$class: 'GitSCM', branches: [[name: '*/test']], userRemoteConfigs: [[url: "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git"]]])
 
-                        // Ensure correct remote setup and branch checkout
+                        // Initialize and update submodules
                         sh '''
-                            cd cronjob
+                            git submodule update --init --recursive
                             git remote set-url origin https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git
                             git checkout test || git checkout -b test
                         '''
 
                         // Update the file with the current date
                         def currentDate = sh(script: 'date +"%A %B %d %Y at %I:%M:%S%p"', returnStdout: true).trim()
-                        writeFile file: 'cronjob/update_me.yaml', text: "LAST_UPDATE: ${currentDate}\n"
+                        writeFile file: 'update_me.yaml', text: "LAST_UPDATE: ${currentDate}\n"
 
                         // Stage, commit, and push changes
                         sh '''
-                            cd cronjob
                             git add update_me.yaml
                             git commit -m "Updated LAST_UPDATE in update_me.yaml"
                             git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git HEAD:test
@@ -38,7 +37,6 @@ pipeline {
 
                         // Create the pull request
                         sh '''
-                            cd cronjob
                             gh pr create \
                             --title "Update from test branch" \
                             --body "This pull request contains updates from the test branch." \
@@ -48,7 +46,6 @@ pipeline {
 
                         // Merge the pull request
                         sh '''
-                            cd cronjob
                             gh pr merge --merge
                         '''
                     }
