@@ -20,13 +20,13 @@ pipeline {
 
                     sh "git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git HEAD:test"
 
-                    sleep(time: 30, unit: 'SECONDS')
+                    sleep(time: 15, unit: 'SECONDS')
                     
                     // Create a pull request from dev to main
-                    // sh "gh pr create --title 'Update from test branch' --body 'This pull request contains updates from the test branch.' --base main --head test"
+                    sh "gh pr create -https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git -title 'Update from test branch' --body 'This pull request contains updates from the test branch.' --base main --head test"
 
                     // Merge the pull request
-                    // sh "gh pr merge test --merge"
+                    sh "gh pr merge https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git test --merge"
                     }
                 }
             }
