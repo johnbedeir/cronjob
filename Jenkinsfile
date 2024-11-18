@@ -7,8 +7,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_TOKEN')]) {
                 script {
                     // Clone the repository
-                    //checkout([$class: 'GitSCM', branches: [[name: '*/dev']], userRemoteConfigs: [[url: 'https://github.com/johnbedeir/cronjob.git']]])
-                    echo "${GIT_TOKEN}" | gh auth login --with-token
+                    checkout([$class: 'GitSCM', branches: [[name: '*/test']], userRemoteConfigs: [[url: 'https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git']]])
+
                     sh '''
                         cd cronjob && git pull https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git test
                     '''
