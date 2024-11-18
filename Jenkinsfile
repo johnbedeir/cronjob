@@ -8,6 +8,7 @@ pipeline {
                 script {
                     // Clone the repository
                     //checkout([$class: 'GitSCM', branches: [[name: '*/dev']], userRemoteConfigs: [[url: 'https://github.com/johnbedeir/cronjob.git']]])
+                    echo "${GIT_TOKEN}" | gh auth login --with-token
                     sh '''
                         cd cronjob && git pull https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git test
                     '''
