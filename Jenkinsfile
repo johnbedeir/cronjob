@@ -5,28 +5,48 @@ pipeline {
         stage('Update File') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_TOKEN')]) {
-                script {
-                    // Clone the repository
-                    //checkout([$class: 'GitSCM', branches: [[name: '*/dev']], userRemoteConfigs: [[url: 'https://github.com/johnbedeir/cronjob.git']]])
-                    sh '''
-                        cd cronjob && git pull https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git test
-                    '''
                     script {
+                        // Clone the repository
+                        checkout([$class: 'GitSCM', branches: [[name: '*/test']], userRemoteConfigs: [[url: "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git"]]])
+
+                        // Ensure correct branch is checked out
+                        sh '''
+                            git remote set-url origin https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git
+                            git checkout test || git checkout -b test
+                        '''
+
+                        // Update the file with the current date
                         def currentDate = sh(script: 'date +"%A %B %d %Y at %I:%M:%S%p"', returnStdout: true).trim()
-                        sh "echo 'LAST_UPDATE: ${currentDate}' > update_me.yaml"
-                    }
-                    sh "git add update_me.yaml"
-                    sh 'git commit -m "Updated LAST_UPDATE in update_me.yaml"'
+                        writeFile file: 'update_me.yaml', text: "LAST_UPDATE: ${currentDate}\n"
 
-                    sh "git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git HEAD:test"
+                        // Stage, commit, and push changes
+                        sh '''
+                            git add update_me.yaml
+                            git commit -m "Updated LAST_UPDATE in update_me.yaml"
+                            git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git HEAD:test
+                        '''
 
-                    sleep(time: 30, unit: 'SECONDS')
-                    
-                    // Create a pull request from dev to main
-                    sh "gh pr create --title 'Update from test branch' --body 'This pull request contains updates from the test branch.' --base main --head test"
+                        // Wait for the branch push to reflect
+                        sleep(time: 15, unit: 'SECONDS')
 
-                    // Merge the pull request
-                    sh "gh pr merge test --merge"
+                        // Authenticate GitHub CLI
+                        sh '''
+                            echo "${GIT_TOKEN}" | gh auth login --with-token
+                        '''
+
+                        // Create the pull request
+                        sh '''
+                            gh pr create \
+                            --title "Update from test branch" \
+                            --body "This pull request contains updates from the test branch." \
+                            --base main \
+                            --head test
+                        '''
+
+                        // Merge the pull request
+                        sh '''
+                            gh pr merge --merge
+                        '''
                     }
                 }
             }
