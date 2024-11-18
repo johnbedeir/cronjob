@@ -6,12 +6,11 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_TOKEN')]) {
                     script {
-                        // Clone the repository and initialize submodules
+                        // Clone the repository
                         checkout([$class: 'GitSCM', branches: [[name: '*/test']], userRemoteConfigs: [[url: "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git"]]])
 
-                        // Initialize and update submodules
+                        // Ensure correct branch is checked out
                         sh '''
-                            git submodule update --init --recursive
                             git remote set-url origin https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git
                             git checkout test || git checkout -b test
                         '''
