@@ -68,7 +68,7 @@ pipeline {
 
                         // Ensure correct branch is checked out
                         sh '''
-                            git remote set-url origin https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git
+                            git pull
                             git checkout test || git checkout -b test
                         '''
 
