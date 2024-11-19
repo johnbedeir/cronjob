@@ -68,8 +68,9 @@ pipeline {
 
                         // Ensure correct branch is checked out
                         sh '''
-                            git pull git@github.com:johnbedeir/cronjob.git test
+                            git remote set-url origin https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git
                             git checkout test || git checkout -b test
+                            git pull
                         '''
 
                         // Generate a custom date for the commit (e.g., 30 days ago)
