@@ -70,7 +70,7 @@ pipeline {
                         sh '''
                             git remote set-url origin https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git
                             git checkout test || git checkout -b test
-                            git pull
+                            git pull https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git test
                         '''
 
                         // Generate a custom date for the commit (e.g., 30 days ago)
