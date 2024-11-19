@@ -68,7 +68,7 @@ pipeline {
 
                         // Ensure correct branch is checked out
                         sh '''
-                            git pull
+                            git pull git@github.com:johnbedeir/cronjob.git test
                             git checkout test || git checkout -b test
                         '''
 
