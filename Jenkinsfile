@@ -67,7 +67,7 @@ pipeline {
                         checkout([$class: 'GitSCM', branches: [[name: '*/test']], userRemoteConfigs: [[url: "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git"]]])
 
                         def randomDayOfYear = sh(script: 'echo $(( $(date "+%s") % 365 + 1 ))', returnStdout: true).trim()
-                        def commitDate = sh(script: "date -d '2022-01-01 +${randomDayOfYear} days' +'%Y-%m-%dT%H:%M:%S'", returnStdout: true).trim()
+                        def commitDate = sh(script: "date -d '2024-01-01 +${randomDayOfYear} days' +'%Y-%m-%dT%H:%M:%S'", returnStdout: true).trim()
                         
                         // Ensure correct branch is checked out
                         sh '''
