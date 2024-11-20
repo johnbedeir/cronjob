@@ -66,6 +66,9 @@ pipeline {
                         // Clone the repository
                         checkout([$class: 'GitSCM', branches: [[name: '*/test']], userRemoteConfigs: [[url: "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git"]]])
 
+                        def randomDayOfYear = sh(script: 'echo $(( $(date "+%s") % 365 + 1 ))', returnStdout: true).trim()
+                        def commitDate = sh(script: "date -d '2022-01-01 +${randomDayOfYear} days' +'%Y-%m-%dT%H:%M:%S'", returnStdout: true).trim()
+                        
                         // Ensure correct branch is checked out
                         sh '''
                             git remote set-url origin https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git
@@ -73,29 +76,14 @@ pipeline {
                             git pull https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git test
                         '''
 
-                        // // Generate a custom date for the commit (e.g., 30 days ago)
-                        // def customDate = sh(script: 'date -d "365 days ago" +"%Y-%m-%d %H:%M:%S"', returnStdout: true).trim()
-
-                        // // Update the file
-                        // def currentDate = sh(script: 'date +"%A %B %d %Y at %I:%M:%S%p"', returnStdout: true).trim()
-                        // writeFile file: 'update_me.yaml', text: "LAST_UPDATE: ${currentDate}\n"
-
-                        // // Stage, commit, and push changes with custom commit dates
-                        // sh """
-                        //     export GIT_AUTHOR_DATE='${customDate}'
-                        //     export GIT_COMMITTER_DATE='${customDate}'
-                        //     git add update_me.yaml
-                        //     git commit -m "Updated LAST_UPDATE in update_me.yaml"
-                        //     git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git HEAD:test
-                        // """
                     script {
-                        def currentDate = sh(script: 'date +"%A %B %d %Y at %I:%M:%S%p"', returnStdout: true).trim()
-                        sh "echo 'LAST_UPDATE: ${currentDate}' > update_me.yaml"
+                        //def currentDate = sh(script: 'date +"%A %B %d %Y at %I:%M:%S%p"', returnStdout: true).trim()
+                        sh "echo 'LAST_UPDATE: ${commitDate}' > update_me.yaml"
                         def ISSUE = sh(script: 'gh issue create --title "LAST_UPDATE" --body "Update LAST_UPDATE"', returnStdout: true).trim()
                         def ISSUE_NUMBER = sh(script: "basename ${ISSUE}", returnStdout: true).trim()
                         sh """
                         git add update_me.yaml
-                        git commit -m "Fix #${ISSUE_NUMBER} in update_me.yaml"
+                        GIT_COMMITTER_DATE="${commitDate}" GIT_AUTHOR_DATE="${commitDate}" git commit -m "Fix #${ISSUE_NUMBER} in update_me.yaml"
                         git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/johnbedeir/cronjob.git HEAD:test
                         """
                     }
